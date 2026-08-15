@@ -315,6 +315,7 @@ if (test_ram_region(0x200000, 4096) != 0)
 
     while (1)
     {
+    test_ram_region(0x200000, 4096);
         uint32_t color = (r << 16) | (g << 8) | b;
 
         clear_screen(color, framebuffer, width, height, pitch);
@@ -760,10 +761,12 @@ while (1) {
         draw_string("CPU stress test is running. Press any key to stop stress test....", center_text_x(width, "CPU stress test is running. Press any key to stop stress test...."), center_text_y(height), textcolor, framebuffer, pitch);
         while (1)
         {
+          test_ram_region(0x200000, 4096);
           if (get_hardware_keypress() != 0)
           {
             break;
           }
+          delay_ms_software(10);
         }
         drawmenu(framebuffer, width, height, pitch);
       }
