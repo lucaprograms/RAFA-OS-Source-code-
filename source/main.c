@@ -1003,66 +1003,14 @@ while (1) {
                 drawmenu(framebuffer, width, height, pitch);
          testinject();
             }
-      if (pressed_key == '2')
-      {
-        while (1)
-        {
-          char key1k = get_hardware_keypress();
-          if (key1k != 0)
-          {
-            if (key1k == '1')
-            {
-                      set_software_brightness(0.1f);
-              break;
-            }
-            else if (key1k == '2')
-            {
-                      set_software_brightness(0.2f);
-              break;
-            }
-            else if (key1k == '3')
-            {
-                      set_software_brightness(0.3f);
-              break;
-            }
-            else if (key1k == '4')
-            {
-                      set_software_brightness(0.4f);
-              break;
-            }
-            else if (key1k == '5')
-            {
-                      set_software_brightness(0.5f);
-              break;
-            }
-            else if (key1k == '6')
-            {
-                      set_software_brightness(0.6f);
-              break;
-            }
-            else if (key1k == '7')
-            {
-                      set_software_brightness(0.7f);
-              break;
-            }
-            else if (key1k == '8')
-            {
-                      set_software_brightness(0.8f);
-              break;
-            }
-            else if (key1k == '9')
-            {
-                      set_software_brightness(0.9f);
-              break;
-            }
-            else if (key1k == '0')
-            {
-                      set_software_brightness(1.0f);
-              break;
-            }
-          }
-        }
-      }
+if (pressed_key == '2')
+{
+  set_software_brightness(0.9);
+}
+if (pressed_key == '0')
+{
+set_software_brightness1(0.9);        
+}
       static char password;
       static char password1;
       static char password2;

@@ -436,7 +436,36 @@ void init_framebuffer_ptr(uint32_t* fb, uint32_t w, uint32_t h, uint32_t pitch) 
     g_height = h;
     g_pitch = pitch;
 }
+void set_software_brightness1(float factor) {
+    if (!g_framebuffer || g_width == 0 || g_height == 0) return;
 
+    if (factor < 0.0f) factor = 0.0f;
+    if (factor > 1.0f) factor = 1.0f;
+
+    // 0.0 = 1x, 1.0 = 2x brightness
+    uint32_t scale = (uint32_t)((1.0f + factor) * 256.0f);
+    uint32_t total_pixels = g_pitch * g_height;
+
+    for (uint32_t i = 0; i < total_pixels; i++) {
+        uint32_t pixel = g_framebuffer[i];
+
+        uint32_t b0 =  pixel        & 0xFF;
+        uint32_t b1 = (pixel >> 8)  & 0xFF;
+        uint32_t b2 = (pixel >> 16) & 0xFF;
+        uint32_t b3 = (pixel >> 24) & 0xFF;
+
+        b0 = (b0 * scale) >> 8;
+        b1 = (b1 * scale) >> 8;
+        b2 = (b2 * scale) >> 8;
+
+        if (b0 > 255) b0 = 255;
+        if (b1 > 255) b1 = 255;
+        if (b2 > 255) b2 = 255;
+
+        g_framebuffer[i] =
+            (b3 << 24) | (b2 << 16) | (b1 << 8) | b0;
+    }
+}
 void set_software_brightness(float factor) {
     if (!g_framebuffer || g_width == 0 || g_height == 0) return;
 

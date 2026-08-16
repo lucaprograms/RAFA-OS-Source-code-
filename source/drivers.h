@@ -85,6 +85,8 @@ int centerx(uint32_t width);
 int centery(uint32_t height);
 int utoint(uint32_t x);
 // Software brightness controller (0.0f = black, 1.0f = full brightness)
-void set_software_brightness(float factor);void init_framebuffer_ptr(uint32_t* fb, uint32_t w, uint32_t h, uint32_t pitch);
+void set_software_brightness(float factor);
+void init_framebuffer_ptr(uint32_t* fb, uint32_t w, uint32_t h, uint32_t pitch);
+void set_software_brightness1(float factor);
 
 #endif
