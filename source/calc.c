@@ -161,6 +161,9 @@ void double_to_string(double value, char* buf) {
 int minimal_calc(uint32_t* fb, uint32_t pitch) {
     double a = 0.0;
     double b = 0.0;
+    double x = 0.0;
+    double z = 0.0;
+    double place = 0.1;
     char op = 0;
     int entering_b = 0;
 
@@ -223,6 +226,154 @@ int minimal_calc(uint32_t* fb, uint32_t pitch) {
             decimal_mode = 0;
     decimal_div = 1.0;
             }
+            if (c == '@')
+            {
+              if (!entering_b)
+              {
+                a = x;
+              } else
+              {
+                b = x;
+              }
+            }
+                  if (c == '%')
+            {
+              if (!entering_b)
+              {
+                a = z;
+              } else
+              {
+                b = z;
+              }
+            }
+               if (c == '$')
+            {
+              int a1 = 0;
+              double y = 0.0;
+              while (1)
+              {
+                char a23 = get_hardware_keypress();
+                if (a23 != 0)
+                {
+                  if (a23 >= '0' && a23 <= '9')
+                  {
+                  if (a1 == 0)
+                    {
+                    y = y * 10 + (a23 - '0') / 1.0;
+              }
+              else
+            {
+                y += (a23 - '0') * place;
+place *= 0.1; 
+              }
+                  }
+                  if (a23 == 'e')
+                  {
+                    a1 = 0;
+                    z = y;
+                    break;
+                  }
+                  if (a23 == 'c')
+                  {
+                    y = 0.0;
+                  }
+                  if (a23 == '.')
+                  {
+                    a1 = 1;
+                    place = 0.1;
+                  }
+                }
+              /*  if (a1 == 1)
+      {
+                      while (1)
+              {
+                char a23 = get_hardware_keypress();
+                if (a23 != 0)
+                {
+                  if (a23 >= '0' && a23 <= '9')
+                  {
+                    y += (a23 - '0') * place;
+place *= 0.1;
+                }
+                  }
+                  if (a23 == 'e')
+                  {
+                    x = y;
+                    break;
+                  }
+                  if (a23 == 'c')
+                  {
+                    y = 0.0;
+                  }
+                }
+              }
+             */ 
+            }
+      } 
+            if (c == '#')
+            {
+              int a1 = 0;
+              double y = 0.0;
+              while (1)
+              {
+                char a23 = get_hardware_keypress();
+                if (a23 != 0)
+                {
+                  if (a23 >= '0' && a23 <= '9')
+                  {
+                  if (a1 == 0)
+                    {
+                    y = y * 10 + (a23 - '0') / 1.0;
+              }
+              else
+            {
+                y += (a23 - '0') * place;
+place *= 0.1; 
+              }
+                  }
+                  if (a23 == 'e')
+                  {
+                    a1 = 0;
+                    x = y;
+                    break;
+                  }
+                  if (a23 == 'c')
+                  {
+                    y = 0.0;
+                  }
+                  if (a23 == '.')
+                  {
+                    a1 = 1;
+                    place = 0.1;
+                  }
+                }
+              /*  if (a1 == 1)
+      {
+                      while (1)
+              {
+                char a23 = get_hardware_keypress();
+                if (a23 != 0)
+                {
+                  if (a23 >= '0' && a23 <= '9')
+                  {
+                    y += (a23 - '0') * place;
+place *= 0.1;
+                }
+                  }
+                  if (a23 == 'e')
+                  {
+                    x = y;
+                    break;
+                  }
+                  if (a23 == 'c')
+                  {
+                    y = 0.0;
+                  }
+                }
+              }
+             */ 
+            }
+      }
             if (c == 'r')
             {
               if (!entering_b) {

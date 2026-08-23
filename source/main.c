@@ -13,6 +13,7 @@
 #include "usb_driver.h"
 #include <string.h>
 #include "execute.h"
+#include "programmingt.h"
 
 int d = 1;
 EFI_RUNTIME_SERVICES* RTafter = NULL;
@@ -44,7 +45,7 @@ void testinject(void)
   d = 6;
   Test 5:
   */
-//  testinject1();
+  //testinject1();
 
   
   // Does nothing:
@@ -457,8 +458,8 @@ char* inttostr(int num, char *out_buf) {
 void drawmenu(uint32_t* framebuffer, uint32_t width, uint32_t height, uint32_t pitch)
 {
    clear_screen(background, framebuffer, width, height, pitch);
-      draw_string(returnm(), 50, 50, textcolor, framebuffer, pitch);
-    draw_string("Press 'h' to open the help app.", 50, 110, textcolor, framebuffer, pitch);
+      draw_string(returnm(), center_text_x(width, returnm()), center_text_y(height), textcolor, framebuffer, pitch);
+    draw_string("Press 'h' to open the help app.", center_text_x(width, "Press 'h' to open the help app."), center_text_y(height) + 30, textcolor, framebuffer, pitch);
 }
 void yellow1(void)
 {
@@ -618,7 +619,8 @@ if (x != 1)
     
     init_framebuffer_ptr(framebuffer, width, height, pitch);
     // 3. Print confirmation to the screen
-    handle_timezone_prompt(framebuffer, pitch);
+    handle_timezone_prompt(framebuffer, pitch, width, height);
+
   /*
    static char buf1[32];
    draw_string(inttostr(hextoint("FF"), buf1), 50, 50, textcolor, framebuffer, pitch);
@@ -629,31 +631,57 @@ if (x != 1)
     int e = 1;
     int d1 = 0;
     int mk = 1;
+  //testinject1();
+
 static int last_second = -1;
+
 while (1) {
+    int caps;
     int hh, mm, ss;
     rtc_get_time(&hh, &mm, &ss);
 
     if (ss != last_second) {
+      caps = capslock_state();
+      uint32_t caps_x = center_text_x(width, "CAPS LOCK IS ON!");
+uint32_t caps_y = center_text_y(height) + 70;
+
+for (uint32_t y = caps_y; y < caps_y + Val; y++)
+{
+    for (uint32_t x = caps_x; x < caps_x + (16 * 17); x++)
+    {
+        draw_pixel(x, y, background, framebuffer, pitch);
+    }
+}  
+if (caps == 1)
+    {
+     draw_string("CAPS LOCK IS ON!", center_text_x(width, "CAPS LOCK IS ON!"), center_text_y(height) + 70, textcolor, framebuffer, pitch);
+    } else
+  {
+ draw_string("CAPS LOCK IS OFF!", center_text_x(width, "CAPS LOCK IS OF!"), center_text_y(height) + 70, textcolor, framebuffer, pitch);
+    }
+            uint32_t start_x = center_text_x(width, "12:34");
+uint32_t start_y = center_text_y(height) + 100;
+
+// 2. Dynamic bounding box calculation (71 characters * font width)
+uint32_t end_x = start_x + (5 * Val);
+uint32_t end_y = start_y + Val + 4; // Font height plus a small vertical cushion
+
+// 3. Clean the background using your existing draw_pixel function
+for (uint32_t y = start_y; y < end_y; y++) 
+{
+    for (uint32_t x = start_x; x < end_x; x++) 
+    {
+        draw_pixel(x, y, background, framebuffer, pitch);
+    }
+}
         last_second = ss;
-        draw_clock(framebuffer, pitch, 50, 200);
-        int caps = capslock_state();
-      for (uint32_t y = 70; y < 85; y++) {
-        for (uint32_t x = 50; x < 250; x++) {
-            draw_pixel(x, y, background, framebuffer, pitch);
-        }
+        draw_clock(framebuffer, pitch, center_text_x(width, "12:34"), center_text_y(height) + 100);
+
+
     }
-        if (caps == 1)
-        {
-            
-    draw_string("CAPS LOCK IS ON!", 50, 70, textcolor, framebuffer, pitch);  
-        } else
-        {
-              
-    draw_string("CAPS LOCK IS OFF!", 50, 70, textcolor, framebuffer, pitch);
-        }
-    }
+    
     char pressed_key;
+    
     if (mk == 0)
     {
         pressed_key = get_hardware_keypress();
@@ -697,6 +725,18 @@ while (1) {
               }
             }
             }
+            if (pressed_key == '&')
+            {
+        clear_screen(background, framebuffer, width, height, pitch);
+              proggrammingt(framebuffer, width, height, pitch);
+            drawmenu(framebuffer, width, height, pitch);
+            }
+            if (pressed_key == 'z')
+      {
+        testinject1();
+        delay_ms_software(1000000);
+        drawmenu(framebuffer, width, height, pitch);
+      }
             if (pressed_key == 'r' || pressed_key == 'R')
             {
               monitorapp(framebuffer, pitch); 
@@ -736,6 +776,58 @@ while (1) {
               inputboxes(framebuffer, width, height, pitch);
                 drawmenu(framebuffer, width, height, pitch);
             }
+            if (pressed_key == '@')
+            {
+     
+                draw_string("Press any key to stop screen test..", center_text_x(width, "Press any key to stop test.."), center_text_y(height), textcolor, framebuffer, pitch);
+                delay_ms_software(100000);
+
+               uint32_t r = 255;
+    uint32_t g = 0;
+    uint32_t b = 0;
+
+    while (1)
+    {
+
+        uint32_t color = (r << 16) | (g << 8) | b;
+
+        clear_screen(color, framebuffer, width, height, pitch);
+                      draw_string(returnm(), center_text_x(width, returnm()), 50, textcolor, framebuffer, pitch);
+  
+        if (get_hardware_keypress() != 0)
+    {
+      clear_screen(background, framebuffer, width, height, pitch);
+      break;
+    }
+
+        delay_ms_software(1);
+
+        // Red -> Yellow
+        if (r == 255 && g < 255)
+            g++;
+
+        // Yellow -> Green
+        else if (g == 255 && r > 0)
+            r--;
+
+        // Green -> Cyan
+        else if (g == 255 && b < 255)
+            b++;
+
+        // Cyan -> Blue
+        else if (b == 255 && g > 0)
+            g--;
+
+        // Blue -> Magenta
+        else if (b == 255 && r < 255)
+            r++;
+
+        // Magenta -> Red
+        else if (r == 255 && b > 0)
+            b--;
+    }
+        drawmenu(framebuffer, width, height, pitch);
+            }
             if (pressed_key == '8')
             {
                 clear_screen(background, framebuffer, width, height, pitch);
@@ -773,7 +865,7 @@ while (1) {
             if (pressed_key == '1')
             {
         clear_screen(background, framebuffer, width, height, pitch);
-        draw_string("[1] Decimal to binafry.", 50, 50, textcolor, framebuffer, pitch);
+        draw_string("[1] Decimal to binary.", 50, 50, textcolor, framebuffer, pitch);
         draw_string("[2] Decimal to hexadecimal.", 50, 60, textcolor, framebuffer, pitch);
         draw_string("[5] Exit", 50, 70, textcolor, framebuffer, pitch);
         draw_string("[6] Reload main menu.", 50, 80, textcolor, framebuffer, pitch);
@@ -1170,17 +1262,19 @@ while (1) {
                 {
                   break;
                 }
-             for (volatile int i = 0; i < 50000; i++);
+             for (volatile int i1 = 0; i1 < 50000; i1++);
                 }
               }
                 drawmenu(framebuffer, width, height, pitch);
          testinject();
             }
-    }
+    
 
-        for (volatile int i = 0; i < 50000; i++);
+        for (volatile int i1 = 0; i1 < 50000; i1++) {}
     }
+  }
 }
+
 EFI_STATUS
 EFIAPI
 efi_main (EFI_HANDLE ImageHandle, EFI_SYSTEM_TABLE *SystemTable)

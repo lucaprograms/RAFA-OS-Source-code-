@@ -34,6 +34,7 @@ const char *help_list[] = {
     "[6]  Go to login screen",
     "[7]  Play guess random number game",
     "[8]  Launch Diagnostics application",
+    "[&]  Open proggramming tutorial",
     "=========================================\r\n",
     "Press any key to return to RAFA OS 1.1.1...\r\n"
 };

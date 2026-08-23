@@ -17,7 +17,8 @@ void con(
     uint32_t x,
     uint32_t y,
     uint32_t color,
-    uint32_t pitch
+    uint32_t pitch,
+    uint32_t a1
 )
 {
     if (condition == 1) {
@@ -32,8 +33,44 @@ void con(
     }
   if (condition == 2)
   {
-    background = y;
-    textcolor = x;
+    // con 2 [number of values to be changed] [value 1] [value 2] [value 3] [value 4] ..
+    // return value -1 = invalid number of values to be changed.
+    /*
+      background = 0xFFFF00U;
+  textcolor = 0x000000U;
+  yellow = 0x00B8860B;
+  grey = 0x00333333;
+    */
+    if (x == 1)
+    {
+        background = y;
+    } else if (x == 2)
+    {
+      background = y;
+      textcolor = color;
+    }
+    else if (x == 3)
+    {
+      background = y;
+      textcolor = color;
+      yellow = pitch;
+    }
+    else if (x == 4)
+    {
+      background = y;
+      textcolor = color;
+      yellow = pitch;
+      grey = a1;
+    }
+    else {
+    
+    __asm__ volatile (
+      "movq $-1, %%rax"
+      :
+      :
+      : "rax"
+    );
+    }
   }
     if (condition == 3) {
         __asm__ volatile (
@@ -65,11 +102,15 @@ void con(
         reboot();
     }
 
-    if (condition == 5 &&
-        (uintptr_t)str == 456 &&
-        x == 654)
+    if (condition == 5)
+    {
+    if (x == 0)
     {
         set_software_brightness(0.9);
+    } else
+  {
+set_software_brightness1(0.9);
+    }
     }
    if (condition == 6)
   {

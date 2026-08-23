@@ -51,6 +51,7 @@ set(SRC_FILES
   ${CMAKE_SOURCE_DIR}/error.c
   ${CMAKE_SOURCE_DIR}/execute.c
   ${CMAKE_SOURCE_DIR}/test.S
+  ${CMAKE_SOURCE_DIR}/programmingt.c
 )
 set(BUILD_DIR ${CMAKE_CURRENT_BINARY_DIR})
 set(SO_FILE   ${BUILD_DIR}/main.so)

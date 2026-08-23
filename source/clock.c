@@ -160,8 +160,55 @@ while (1)
 }
 
 
-void handle_timezone_prompt(uint32_t* fb, uint32_t pitch) { 
-    draw_string("Timezone offset (+/- hours):", 50, 230, textcolor, fb, pitch);
+void handle_timezone_prompt(uint32_t* fb, uint32_t pitch, uint32_t width, uint32_t height) { 
+    draw_string("Enter the number based on the table (+/- hours):", 50, 230, textcolor, fb, pitch);
+    const char* zones[] = {
+    // Negative Offsets (West of UTC)
+    "BIT -12:00", "SST -11:00", "NUT -11:00", "HAST -10:00",
+    "HDT -9:00",  "AKST -9:00", "AKDT -8:00", "PST -8:00",
+    "PDT -7:00",  "MST -7:00",  "MDT -6:00",  "CST -6:00",
+    "CDT -5:00",  "EST -5:00",  "EDT -4:00",  "AST -4:00",
+    "ADT -3:00",  "NST -3:30",  "NDT -2:30",  "BRT -3:00",
+    "ART -3:00",  "FNT -2:00",  "GST -2:00",  "AZOT -1:00",
+    "CVT -1:00",
+
+    // Neutral Offsets (UTC / GMT)
+    "UTC +0:00",  "GMT +0:00",  "WET +0:00",
+
+    // Positive Offsets (East of UTC)
+    "WEST +1:00", "BST +1:00",  "CET +1:00",  "CEST +2:00",
+    "EET +2:00",  "EEST +3:00", "AST +3:00",  "MSK +3:00",
+    "EAT +3:00",  "IRST +3:30", "IRDT +4:30", "GST +4:00",
+    "AZT +4:00",  "MUT +4:00",  "AFT +4:30",  "PKT +5:00",
+    "UZT +5:00",  "IST +5:30",  "NPT +5:45",  "BST +6:00",
+    "KGT +6:00",  "MMT +6:30",  "WIB +7:00",  "ICT +7:00",
+    "CST +8:00",  "SGT +8:00",  "AWST +8:00", "WST +8:00",
+    "ULAT +8:00", "WITA +8:00", "JST +9:00",  "KST +9:00",
+    "WIT +9:00",  "ACST +9:30", "ACDT +10:30", "AEST +10:00",
+    "AEDT +11:00", "CHST +10:00", "VLAT +10:00", "SRET +11:00",
+    "NFT +11:00", "NZST +12:00", "NZDT +13:00", "FJT +12:00",
+    "PETT +12:00", "GILT +12:00", "PHOT +13:00", "TKT +13:00",
+    "WST +13:00", "LINT +14:00", "TOST +14:00"
+};
+
+int total_zones = sizeof(zones) / sizeof(zones[0]);
+int start_y = 250;
+int line_height = 15;
+int max_lines_per_column = 20; // Splits into 2 columns of 40 lines each
+int column_width = 180;        // Space between column 1 and column 2
+
+for (int i = 0; i < total_zones; i++) {
+    // Determine column position (0 for left column, 1 for right column)
+    int col = i / max_lines_per_column; 
+    
+    // Reset row index for the second column
+    int row = i % max_lines_per_column; 
+
+    int current_x = 50 + (col * column_width);
+    int current_y = start_y + (row * line_height);
+
+    draw_string(zones[i], current_x, current_y, textcolor, fb, pitch);
+}
     int sign = 1;
     int value = 0;
 
@@ -173,13 +220,14 @@ void handle_timezone_prompt(uint32_t* fb, uint32_t pitch) {
     } else if (k == '+') {
         k = wait_for_keypress();
     }
-
+    
     while (k >= '0' && k <= '9') {
         value = value * 10 + (k - '0');
         k = wait_for_keypress();
     }
 
     timezone_offset = sign * value;
+  clear_screen(background, fb, width, height, pitch);
     draw_string("Set is am/pm format: defualt 1: ", 50, 250, textcolor, fb, pitch);
     wait();
     for (uint32_t cy = 250; cy < 250 + 16; cy++) {
@@ -206,7 +254,6 @@ void update_clock_loop(uint32_t* fb, uint32_t pitch) {
 
     char key = get_hardware_keypress();
     if (key == 't' || key == 'T') {
-        handle_timezone_prompt(fb, pitch);
     }
 }
 
