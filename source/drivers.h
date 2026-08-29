@@ -88,5 +88,6 @@ int utoint(uint32_t x);
 void set_software_brightness(float factor);
 void init_framebuffer_ptr(uint32_t* fb, uint32_t w, uint32_t h, uint32_t pitch);
 void set_software_brightness1(float factor);
+void pic_send_eoi(uint8_t irq);
 
 #endif

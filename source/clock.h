@@ -14,7 +14,7 @@ void rtc_get_time(int* hour, int* minute, int* second);
 // -----------------------------
 
 void set_timezone_offset(int offset);
-void handle_timezone_prompt(uint32_t* fb, uint32_t pitch);
+void handle_timezone_prompt(uint32_t* fb, uint32_t pitch, uint32_t width, uint32_t height);
 
 // -----------------------------
 // Clock drawing

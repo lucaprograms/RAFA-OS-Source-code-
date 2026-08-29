@@ -491,3 +491,10 @@ void set_software_brightness(float factor) {
     }
 }
 
+void pic_send_eoi(uint8_t irq)
+{
+    if (irq >= 8)
+        outb(0xA0, 0x20);  // slave PIC
+
+    outb(0x20, 0x20);      // master PIC
+}

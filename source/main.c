@@ -10,7 +10,6 @@
 #include "inputboxes.h"
 #include "clock.h"
 #include "resource.h"
-#include "usb_driver.h"
 #include <string.h>
 #include "execute.h"
 #include "programmingt.h"
@@ -588,6 +587,129 @@ int mainx(uint32_t* framebuffer,
 
     return 0;
 }
+int mainx1(uint32_t* framebuffer,
+          uint32_t width,
+          uint32_t height,
+          uint32_t pitch)
+{
+  int sig10 = 0;
+  while (1)
+  {
+    char g101 = get_hardware_keypress();
+    if (g101 == 'e')
+    {
+      sig10 = 1;
+      break;
+    }
+    else if (g101 != 0)
+    {
+      break;
+    }
+  }
+  if (sig10 == 1)
+  {
+    return 100;
+  }
+    clear_screen(background, framebuffer, width, height, pitch);
+
+    char guess = 0;
+    char guess1 = 0;
+
+    draw_string(
+        "Guess a two digit repeat number (two digit repeat like 55) (0-9): ",
+        center_text_x(width, "Guess a two digit repeat number (two digit repeat like 55) (0-9): "),
+        center_text_y(height),
+        textcolor,
+        framebuffer,
+        pitch
+    );
+  
+
+    while (guess == 0)
+    {
+        guess = get_hardware_keypress();
+
+        if (guess != 0)
+        {
+            seed_random(guess);
+        }
+    }
+   while (guess1 == 0)
+    {
+        guess1 = get_hardware_keypress();
+
+        if (guess1 != 0)
+        {
+            seed_random(guess1);
+        }
+    }
+
+    int target = maina();
+
+    if (guess == target && guess1 == target)
+    {
+        draw_string(
+            "Correct!",
+            center_text_x(width, "Correct!"),
+            50,
+            textcolor,
+            framebuffer,
+            pitch
+        );
+    
+        draw_char(
+            target,
+            center_text_x(width, "a"),
+            110,
+            textcolor,
+            framebuffer,
+            pitch
+        );
+        draw_char(
+            target,
+            center_text_x(width, "a"),
+            114,
+            textcolor,
+            framebuffer,
+            pitch
+        );
+     delay_ms_software(99999);
+        clear_screen(background, framebuffer, width, height, pitch);
+    }
+    else
+    {
+        draw_string(
+            "Wrong! The number was: ",
+            center_text_x(width, "Wrong! The number was: "),
+            50,
+            textcolor,
+            framebuffer,
+            pitch
+        );
+
+            draw_char(
+            target,
+            center_text_x(width, "a"),
+            110,
+            textcolor,
+            framebuffer,
+            pitch
+        );
+        draw_char(
+            target,
+            center_text_x(width, "a") + 16,
+            110,
+            textcolor,
+            framebuffer,
+            pitch
+        );
+    delay_ms_software(99999);
+        clear_screen(background, framebuffer, width, height, pitch);
+    }
+  
+
+    return 0;
+}
 
 // 1. Reserve a blank 64-byte staging area in safe memory
 
@@ -731,6 +853,17 @@ for (uint32_t y = start_y; y < end_y; y++)
               proggrammingt(framebuffer, width, height, pitch);
             drawmenu(framebuffer, width, height, pitch);
             }
+            if (pressed_key == '*')
+            {
+                    while (1)
+        {
+            if (mainx1(framebuffer, width, height, pitch) == 100)
+          {
+            drawmenu(framebuffer, width, height, pitch);
+            break;
+          }
+        }
+            }
             if (pressed_key == 'z')
       {
         testinject1();
@@ -776,7 +909,7 @@ for (uint32_t y = start_y; y < end_y; y++)
               inputboxes(framebuffer, width, height, pitch);
                 drawmenu(framebuffer, width, height, pitch);
             }
-            if (pressed_key == '@')
+            if (pressed_key == '#')
             {
      
                 draw_string("Press any key to stop screen test..", center_text_x(width, "Press any key to stop test.."), center_text_y(height), textcolor, framebuffer, pitch);
@@ -785,15 +918,16 @@ for (uint32_t y = start_y; y < end_y; y++)
                uint32_t r = 255;
     uint32_t g = 0;
     uint32_t b = 0;
-
     while (1)
     {
 
         uint32_t color = (r << 16) | (g << 8) | b;
-
-        clear_screen(color, framebuffer, width, height, pitch);
-                      draw_string(returnm(), center_text_x(width, returnm()), 50, textcolor, framebuffer, pitch);
-  
+    rtc_get_time(&hh, &mm, &ss);
+  draw_string("12:34 PM", center_text_x(width, "12:34"), center_text_y(height) + 100, textcolor, framebuffer, pitch);
+     draw_string("CAPS LOCK IS ON!", center_text_x(width, "CAPS LOCK IS ON!"), center_text_y(height) + 70, textcolor, framebuffer, pitch);
+    clear_screen(color, framebuffer, width, height, pitch);
+      draw_string(returnm(), center_text_x(width, returnm()), center_text_y(height), textcolor, framebuffer, pitch);
+    draw_string("Press any key to exit...", center_text_x(width, "Press any key to exit..."), center_text_y(height) + 30, textcolor, framebuffer, pitch); 
         if (get_hardware_keypress() != 0)
     {
       clear_screen(background, framebuffer, width, height, pitch);
@@ -1243,11 +1377,22 @@ while (1) {
                      drawmenu(framebuffer, width, height, pitch);
          testinject();
             }
+            if (pressed_key == '(')
+            {
+              drawmenu(framebuffer, width, height, pitch);
+              set_software_brightness(0.8f);
+            }
+            if (pressed_key == ')')
+            {
+              drawmenu(framebuffer, width, height, pitch);
+              set_software_brightness(0.5);
+            }
             if (pressed_key == 'p' || pressed_key == 'P')
             {
               clear_screen(background, framebuffer, width, height, pitch);
-              draw_string("Press 'r' to reboot this PC. Press any other key to exit..", 50, 50, textcolor, framebuffer, pitch);
-              draw_string("", 50, 110, textcolor, framebuffer, pitch);
+              draw_string("Press 'r' to reboot this PC", 50, 50, textcolor, framebuffer, pitch);
+              draw_string("Press 'f' to freeze the OS/COMPUTER. Force reboot to continue.", 50, 70, textcolor, framebuffer, pitch);
+              draw_string("Press any other key to return to RAFA OS...", 50, 100, grey, framebuffer, pitch);
               char poweroff = get_hardware_keypress();
               while (1)
               {
@@ -1257,7 +1402,15 @@ while (1) {
                 if (poweroff == 'r' || poweroff == 'R')
                 {
                   reboot();
+                
                 }
+else if (poweroff == 'f')
+{
+              clear_screen(background, framebuffer, width, height, pitch);
+        __asm__ volatile("hlt");
+}
+
+
                 else
                 {
                   break;
@@ -1391,7 +1544,7 @@ launch_kernel:
                 
                 EFI_GRAPHICS_OUTPUT_PROTOCOL *gop;
                 EFI_GUID gop_guid = EFI_GRAPHICS_OUTPUT_PROTOCOL_GUID;
-                if (EFI_ERROR(uefi_call_wrapper(BS->LocateProtocol, 3, &gop_guid, NULL, (void**)&gop))) return EFI_LOAD_ERROR;
+                if (EFI_ERROR(uefi_call_wrapper(BS->LocateProtocol, 3, &gop_guid, NULL, (void**)&gop))) {Print(L"Boot Error. Exiting.."); Print(L"Debug Info: EFI_LOCATE_PROTOCOL(GOP) HAD AN ERROR.");return EFI_LOAD_ERROR;}
                 RTafter = SystemTable->RuntimeServices;
                 uint32_t* fb_base = (uint32_t*)gop->Mode->FrameBufferBase;
                 uint32_t width   = gop->Mode->Info->HorizontalResolution;
@@ -1404,20 +1557,21 @@ launch_kernel:
 
                 uefi_call_wrapper(BS->GetMemoryMap, 5, &memory_map_size, NULL, &map_key, &descriptor_size, &descriptor_version);
                 memory_map_size += (4 * descriptor_size);
-                if (EFI_ERROR(uefi_call_wrapper(BS->AllocatePool, 3, EfiLoaderData, memory_map_size, (void **)&mem_map_buf))) return EFI_LOAD_ERROR;
-                if (EFI_ERROR(uefi_call_wrapper(BS->GetMemoryMap, 5, &memory_map_size, mem_map_buf, &map_key, &descriptor_size, &descriptor_version))) return EFI_LOAD_ERROR;
+                if (EFI_ERROR(uefi_call_wrapper(BS->AllocatePool, 3, EfiLoaderData, memory_map_size, (void **)&mem_map_buf))) {Print(L"Boot Error. Exiting.."); Print(L"Debug Info: Could Not Allocate Memory.");return EFI_LOAD_ERROR;}
+                if (EFI_ERROR(uefi_call_wrapper(BS->GetMemoryMap, 5, &memory_map_size, mem_map_buf, &map_key, &descriptor_size, &descriptor_version))) {Print(L"Boot Error. Exiting.."); Print(L"Debug Info: Could Not Find Memory Allocation.");return EFI_LOAD_ERROR;}
 
                 Status = uefi_call_wrapper(BS->ExitBootServices, 2, ImageHandle, map_key);         
         if (Status != EFI_SUCCESS) {
-                Print(L" Boot Error. Trying agian\n\n");
+                Print(L" Boot Error. Trying agian...\n\n");
+          Print(L"Debug Info: EFI_EXIT_BOOT_SERVICES() had the first error.");
           uefi_call_wrapper(BS->Stall, 1, 5000000);
                     uefi_call_wrapper(BS->GetMemoryMap, 5, &memory_map_size, mem_map_buf, &map_key, &descriptor_size, &descriptor_version);
-                    if (EFI_ERROR(uefi_call_wrapper(BS->ExitBootServices, 2, ImageHandle, map_key))) {Print(L"Boot Error. Exiting..\n\n"); uefi_call_wrapper(BS->Stall, 1, 5000000);return EFI_LOAD_ERROR;}
+                    if (EFI_ERROR(uefi_call_wrapper(BS->ExitBootServices, 2, ImageHandle, map_key))) {Print(L"Boot Error. Exiting..\n\n"); Print(L"Debug Info: EFI_EXIT_BOOT_SERVICES() had the second error."); uefi_call_wrapper(BS->Stall, 1, 5000000);return EFI_LOAD_ERROR;}
                 }
 
                 kernel_main_after_efi(fb_base, width, height, pitch);
             }
-        }
+      }
         else if (Status == EFI_NOT_READY)
         {
             uefi_call_wrapper(BS->Stall, 1, 4000); // Small delay to prevent CPU spinning aggressively

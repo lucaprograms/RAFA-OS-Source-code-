@@ -9,7 +9,7 @@ const char *help_list[] = {
     "=========================================",
 
     "Rafa OS 1.1.1 is an minmal one file kernel that includes a minmal calclator utillity.",
-    "Make sure to vist my github website at: github.com/lucaprograms",
+    "Make sure to vist my github website at: github.com/lucaprograms.",
     "Once you get to the main os (kernel) menu, you can press certain keys to control and use the OS (kernel), such as: ",
     "[c]  Open Calclator",
     "[y]  Show version, and show 'Respectfully RAFA OS', plus version",
@@ -35,6 +35,10 @@ const char *help_list[] = {
     "[7]  Play guess random number game",
     "[8]  Launch Diagnostics application",
     "[&]  Open proggramming tutorial",
+    "[*]  Play guess random two digit repeat number game",
+    "[#]  Main Menu Style Screen Test",
+    "[(]  Low Brightness Main Menu Redraw",
+    "[)]  Extremely Low Brightness Main Menu Redraw",
     "=========================================\r\n",
     "Press any key to return to RAFA OS 1.1.1...\r\n"
 };
