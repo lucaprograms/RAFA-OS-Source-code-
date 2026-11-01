@@ -1,0 +1,19 @@
+____________________________________________________________________
+
+DOCUMENTATION FOR RAFA OS 12.0.1
+
+____________________________________________________________________
+
+
+This is my hobby project OS (actually a monolithic kernel) that is less than 1 MB in one file.
+I made the core of it with AI.
+I only had to write a couple hundreds of lines of code or less.
+It is composed of more than five source code files.
+Applications for the OS have to built with the source code.
+The build script and source code is made for Linux Ubuntu 26.04  or Linux Debian 13 OS.
+
+_____________________________________________________________________________________________________
+
+Github website: "github.com/lucaprograms"
+
+_____________________________________________________________________________________________________
